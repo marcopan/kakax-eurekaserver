@@ -1,0 +1,16 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: kakaxeureka-server
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
