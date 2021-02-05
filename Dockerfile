@@ -1,3 +1,6 @@
-FROM nginx:latest
+FROM mayank123/centosjavamvn
 RUN echo hello
-RUN ls -a
+RUN cat /proc/version
+RUN uname -a
+RUN java -version
+RUN mvn compile
