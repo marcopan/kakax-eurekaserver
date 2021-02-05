@@ -1,6 +1,8 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
 RUN ls -a
+RUN find / -name "pom.xml"
+RUN find / -name "Dockerfile"
 #ARG JAR_FILE
 #COPY ${JAR_FILE} /usr/app.jar
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/usr/app.jar"]
