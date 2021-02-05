@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-RUN ls -a
-RUN find / -name "pom.xml"
+WORKDIR /tmp
+RUN pwd
+RUN ls /tmp -a
 RUN find / -name "Dockerfile"
 #ARG JAR_FILE
 #COPY ${JAR_FILE} /usr/app.jar
