@@ -7,4 +7,4 @@ RUN ls -a
 EXPOSE 9090
 MAINTAINER nongfu <nongfu@test.com>
 
-git config --global credential.helper store
+#git config --global credential.helper store
