@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
-WORKDIR /tmp
+#WORKDIR /tmp
 RUN pwd
-RUN ls /tmp -a
+RUN ls -a
 RUN find / -name "Dockerfile"
 #ARG JAR_FILE
 #COPY ${JAR_FILE} /usr/app.jar
