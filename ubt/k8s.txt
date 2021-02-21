@@ -1,0 +1,115 @@
+sudo apt-get update
+sudo apt install openssh-server
+sudo service ssh start
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+
+sudo systemctl enable docker.service
+
+换源
+sudo vi /etc/docker/daemon.json
+sudo systemctl restart docker
+docker rmi nginx
+
+{
+        "registry-mirrors":[
+        "https://docker.mirrors.ustc.edu.cn",
+        "https://registry.docker-cn.com",
+        "http://hub-mirror.c.163.com"
+        ],
+        "iptables": false,
+        "ip-masq": false,
+        "storage-driver": "overlay2"
+}
+--------------------------------------------------
+sudo ufw disable
+sudo swapoff -a
+sudo tee /etc/sysctl.d/k8s.conf <<-'EOF'
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+#[ERROR FileContent--proc-sys-net-bridge-bridge-nf-call-iptables]: /proc/sys/net/bridge/bridge-nf-call-iptables does not exist
+sudo vi /etc/modules
+sudo modprobe br_netfilter
+
+sudo systemctl enable docker && sudo systemctl start docker
+
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+
+sudo tee /etc/apt/sources.list.d/kubernetes.list <<-'EOF'
+deb https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial main
+EOF
+
+sudo apt-get update
+
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+sudo curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo tee /etc/apt/sources.list.d/kubernetes.list <<-'EOF'
+deb https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo tee /etc/sysctl.d/k8s.conf <<-'EOF'
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+sudo apt-get install -y kubelet kubeadm kubectl
+
+node:
+sudo apt-get remove kubectl  --purge
+
+sudo systemctl enable kubelet.service
+sudo vi /etc/fstab
+free -m
+sudo kubeadm init \
+--apiserver-advertise-address=172.16.215.101 \
+--image-repository registry.aliyuncs.com/google_containers \
+--kubernetes-version 1.20.2 \
+--service-cidr=172.16.213.0/24 \
+--pod-network-cidr=172.200.0.0/24
+
+---------------------------------------------------------
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+sudo kubeadm join 172.16.215.101:6443 --token kc93hq.t5mvx4qrnqcub4gk \
+    --discovery-token-ca-cert-hash sha256:ee718cbc53f92b7419f74cbece91f6dac37e885d194326137e27fbb666263937
+------------------------------------------------------------
+
+kubectl create -f kube-flannel.yml
+kubectl cluster-info
+helm create nginxhelm
+helm install stable/mysql --generate-name
+helm install stable/wordpress --generate-name
+
+helm repo update
+helm repo add stable https://charts.helm.sh/stable
+helm search repo stable
+helm ls
+helm uninstall mysql-1613186200
+
+helm repo remove stable
+helm repo add stable http://mirror.azure.cn/kubernetes/charts/
+helm repo add stable https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+helm repo update
